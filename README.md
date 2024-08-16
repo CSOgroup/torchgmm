@@ -6,6 +6,7 @@
 [badge-tests]: https://img.shields.io/github/actions/workflow/status/CSOgroup/torchgmm/test.yaml?branch=main
 [link-tests]: https://github.com/CSOgroup/torchgmm/actions/workflows/test.yml
 [badge-docs]: https://img.shields.io/readthedocs/torchgmm
+[link-docs]: https://torchgmm.readthedocs.io/
 
 TorchGMM allows to run Gaussian Mixture Models on single or multiple CPUs/GPUs.
 The repository is a fork from [PyCave](https://github.com/borchero/pycave) and [LightKit](https://github.com/borchero/lightkit), two amazing packages developed by [Oliver Borchert](https://github.com/borchero) that are not being maintained anymore.
