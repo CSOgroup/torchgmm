@@ -1,38 +1,25 @@
 # API
 
-## Preprocessing
+## Bayesian Models
 
 ```{eval-rst}
-.. module:: torchgmm.pp
+.. module:: torchgmm.bayes
 .. currentmodule:: torchgmm
 
 .. autosummary::
     :toctree: generated
 
-    pp.basic_preproc
+    bayes.GaussianMixture
 ```
 
-## Tools
+## Clustering Models
 
 ```{eval-rst}
-.. module:: torchgmm.tl
+.. module:: torchgmm.clustering
 .. currentmodule:: torchgmm
 
 .. autosummary::
     :toctree: generated
 
-    tl.basic_tool
-```
-
-## Plotting
-
-```{eval-rst}
-.. module:: torchgmm.pl
-.. currentmodule:: torchgmm
-
-.. autosummary::
-    :toctree: generated
-
-    pl.basic_plot
-    pl.BasicClass
+    clustering.KMeans
 ```

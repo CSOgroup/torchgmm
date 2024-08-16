@@ -4,10 +4,10 @@ requires = ["hatchling"]
 
 [project]
 name = "torchgmm"
-version = "0.0.1"
+version = "0.1.1"
 description = "Run Gaussian Mixture Models on single or multiple CPUs/GPUs"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 license = {file = "LICENSE"}
 authors = [
     {name = "Marco Varrone"},
@@ -22,6 +22,10 @@ dependencies = [
     "anndata",
     # for debug logging (referenced from the issue template)
     "session-info",
+    "numpy>=1.20.3,<2.0.0",
+    "pytorch-lightning>=1.6.0",
+    "torch>1.11.0",
+    "torchmetrics>=0.6"
 ]
 
 [project.optional-dependencies]
@@ -47,6 +51,9 @@ doc = [
 test = [
     "pytest",
     "coverage",
+    "flaky",
+    "pytest-benchmark",
+    "scikit-learn"
 ]
 
 [tool.coverage.run]
@@ -110,6 +117,10 @@ ignore = [
     "D203",
     # We want docstrings to start immediately after the opening triple quote
     "D213",
+    "D102",
+    "D205",
+    "D200",
+    "B024"
 ]
 
 [tool.ruff.lint.pydocstyle]
@@ -127,7 +138,5 @@ skip = [
     "src/**/basic.py",
     "docs/api.md",
     "docs/changelog.md",
-    "docs/references.bib",
-    "docs/references.md",
-    "docs/notebooks/example.ipynb",
+    "docs/benchmark.md",
 ]
