@@ -135,6 +135,10 @@ class GaussianMixture(
             raise ValueError(
                 "Data is of type float64. Transform it to float32 or use trainer_params={'precision': 64}."
             )
+
+        logging_level = logging.getLogger("lightning.pytorch").getEffectiveLevel()
+        logging.getLogger("lightning.pytorch").setLevel(logging.ERROR)
+
         # Initialize the model
         num_features = len(data[0])
         config = GaussianMixtureModelConfig(
@@ -156,8 +160,8 @@ class GaussianMixture(
         if self.init_means is not None:
             self.model_.means.copy_(self.init_means)
         elif self.init_strategy in ("kmeans", "kmeans++"):
-            logger.info("Fitting K-means estimator...")
             params = self.trainer_params_user
+            params = {**(params or {}), **{"enable_progress_bar": False}}
             if self.init_strategy == "kmeans++":
                 params = {**(params or {}), **{"max_epochs": 0}}
 
@@ -169,13 +173,12 @@ class GaussianMixture(
             self.model_.means.copy_(estimator.model_.centroids)
 
         # Run initialization
-        logger.info("Running initialization...")
         if self.init_strategy in ("kmeans", "kmeans++") and self.init_means is None:
             module = GaussianMixtureKmeansInitLightningModule(
                 self.model_,
                 covariance_regularization=self.covariance_regularization,
             )
-            self.trainer(max_epochs=1).fit(module, loader)
+            self.trainer(max_epochs=1, enable_progress_bar=False).fit(module, loader)
         else:
             module = GaussianMixtureRandomInitLightningModule(
                 self.model_,
@@ -183,17 +186,21 @@ class GaussianMixture(
                 is_batch_training=is_batch_training,
                 use_model_means=self.init_means is not None,
             )
-            self.trainer(max_epochs=1 + int(is_batch_training)).fit(module, loader)
+            self.trainer(max_epochs=1 + int(is_batch_training), enable_progress_bar=False).fit(module, loader)
+
+        logging.getLogger("lightning.pytorch").setLevel(logging_level)
 
         # Fit model
-        logger.info("Fitting Gaussian mixture...")
         module = GaussianMixtureLightningModule(
             self.model_,
             convergence_tolerance=self.convergence_tolerance,
             covariance_regularization=self.covariance_regularization,
             is_batch_training=is_batch_training,
         )
-        trainer = self.trainer(max_epochs=cast(int, self.trainer_params["max_epochs"]) * (1 + int(is_batch_training)))
+        trainer = self.trainer(
+            max_epochs=cast(int, self.trainer_params["max_epochs"]) * (1 + int(is_batch_training)),
+            enable_progress_bar=self.trainer_params.get("enable_progress_bar", True),
+        )
         trainer.fit(module, loader)
 
         # Assign convergence properties

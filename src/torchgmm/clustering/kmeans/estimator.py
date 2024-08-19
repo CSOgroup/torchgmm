@@ -136,15 +136,14 @@ class KMeans(
             )
             num_epochs = 2 * config.num_clusters - 1
 
-        logger.info("Running initialization...")
-        self.trainer(max_epochs=num_epochs).fit(module, loader)
+        self.trainer(max_epochs=num_epochs, enable_progress_bar=False).fit(module, loader)
 
         # Then, in order to find the right convergence tolerance, we need to compute the variance
         # of the data.
         if self.convergence_tolerance != 0:
             variances = torch.empty(config.num_features)
             module = FeatureVarianceLightningModule(variances)
-            self.trainer().fit(module, loader)
+            self.trainer(enable_progress_bar=False).fit(module, loader)
 
             tolerance_multiplier = cast(float, variances.mean().item())
             convergence_tolerance = self.convergence_tolerance * tolerance_multiplier
@@ -152,7 +151,6 @@ class KMeans(
             convergence_tolerance = 0
 
         # Then, we can fit the actual model. We need a new trainer for that
-        logger.info("Fitting K-Means...")
         trainer = self.trainer()
         module = KMeansLightningModule(
             self.model_,
