@@ -23,7 +23,7 @@ dependencies = [
     # for debug logging (referenced from the issue template)
     "session-info",
     "numpy>=1.20.3,<2.0.0",
-    "pytorch-lightning>=1.6.0",
+    "pytorch-lightning>=2.0.0",
     "torch>1.11.0",
     "torchmetrics>=0.6"
 ]
