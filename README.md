@@ -22,15 +22,15 @@ TorchGMM models against scikit-learn models is available on the
 
 ## Features
 
--   Support for GPU and multi-node training by implementing models in PyTorch and relying on
-    [PyTorch Lightning](https://lightning.ai/docs/pytorch/stable/)
--   Mini-batch training for all models such that they can be used on huge datasets
--   Well-structured implementation of models
+- Support for GPU and multi-node training by implementing models in PyTorch and relying on
+  [PyTorch Lightning](https://lightning.ai/docs/pytorch/stable/)
+- Mini-batch training for all models such that they can be used on huge datasets
+- Well-structured implementation of models
 
-    -   High-level `Estimator` API allows for easy usage such that models feel and behave like in
-        scikit-learn
-    -   Medium-level `LightingModule` implements the training algorithm
-    -   Low-level PyTorch `Module` manages the model parameters
+    - High-level `Estimator` API allows for easy usage such that models feel and behave like in
+      scikit-learn
+    - Medium-level `LightingModule` implements the training algorithm
+    - Low-level PyTorch `Module` manages the model parameters
 
 ## Getting started
 
@@ -110,8 +110,8 @@ In fact, **you do not need to change anything else in your code**.
 
 Currently, TorchGMM implements two different models:
 
--   [GaussianMixture](https://pycave.borchero.com/sites/generated/bayes/gmm/pycave.bayes.GaussianMixture.html)
--   [K-Means](https://pycave.borchero.com/sites/generated/clustering/kmeans/pycave.clustering.KMeans.html)
+- [GaussianMixture](https://pycave.borchero.com/sites/generated/bayes/gmm/pycave.bayes.GaussianMixture.html)
+- [K-Means](https://pycave.borchero.com/sites/generated/clustering/kmeans/pycave.clustering.KMeans.html)
 
 ## Contribution
 
