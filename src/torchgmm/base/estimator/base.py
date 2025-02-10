@@ -173,7 +173,7 @@ class BaseEstimator(ABC):
                 f.write(data)
         except TypeError:
             warnings.warn(
-                f"Failed to serialize parameters of `{self.__class__.__name__}` to JSON. " "Falling back to `pickle`.",
+                f"Failed to serialize parameters of `{self.__class__.__name__}` to JSON. Falling back to `pickle`.",
                 stacklevel=2,
             )
             with (path / "params.pickle").open("wb+") as f:

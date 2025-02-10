@@ -18,6 +18,6 @@ def get_generic_type(cls: Type[Any], origin: Type[Any], index: int = 0) -> Type[
         if get_origin(base) == origin:
             args = get_args(base)
             if not args:
-                raise ValueError(f"`{cls.__name__}` does not provide a generic parameter " f"for `{origin.__name__}`")
+                raise ValueError(f"`{cls.__name__}` does not provide a generic parameter for `{origin.__name__}`")
             return get_args(base)[index]
     raise ValueError(f"`{cls.__name__}` does not inherit from `{origin.__name__}`")
