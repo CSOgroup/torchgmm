@@ -1,10 +1,14 @@
 # TorchGMM
 
-[![Tests][badge-tests]][link-tests]
-[![Documentation][badge-docs]][link-docs]
+[![Tests][badge-tests]][tests]
+[![Documentation][badge-docs]][documentation]
 
+<<<<<<< ours
 [badge-tests]: https://img.shields.io/github/actions/workflow/status/CSOgroup/torchgmm/test.yaml?branch=main
 [link-tests]: https://github.com/CSOgroup/torchgmm/actions/workflows/test.yml
+=======
+[badge-tests]: https://img.shields.io/github/actions/workflow/status/marcovarrone/torchgmm/test.yaml?branch=main
+>>>>>>> theirs
 [badge-docs]: https://img.shields.io/readthedocs/torchgmm
 [link-docs]: https://torchgmm.readthedocs.io/
 
@@ -22,6 +26,7 @@ TorchGMM models against scikit-learn models is available on the
 
 ## Features
 
+<<<<<<< ours
 - Support for GPU and multi-node training by implementing models in PyTorch and relying on
   [PyTorch Lightning](https://lightning.ai/docs/pytorch/stable/)
 - Mini-batch training for all models such that they can be used on huge datasets
@@ -31,17 +36,31 @@ TorchGMM models against scikit-learn models is available on the
       scikit-learn
     - Medium-level `LightingModule` implements the training algorithm
     - Low-level PyTorch `Module` manages the model parameters
+=======
+Please refer to the [documentation][],
+in particular, the [API documentation][].
+>>>>>>> theirs
 
 ## Getting started
 
 Please refer to the documentation. In particular, the [API documentation](https://pycave.borchero.com/sites/api.html)
 
+<<<<<<< ours
 ### Requirements
+=======
+You need to have Python 3.10 or newer installed on your system.
+If you don't have Python installed, we recommend installing [uv][].
+>>>>>>> theirs
 
 TorchGMM requires PyTorch to be installed. The installation instructions can be found on the
 [PyTorch website](https://pytorch.org/get-started/locally/).
 
+<<<<<<< ours
 TorchGMM is available via `pip`:
+=======
+<!--
+1) Install the latest release of `torchgmm` from [PyPI][]:
+>>>>>>> theirs
 
 ```bash
 pip install torchgmm
@@ -49,6 +68,7 @@ pip install torchgmm
 
 ## Usage
 
+<<<<<<< ours
 If you've ever used scikit-learn, you'll feel right at home when using TorchGMM. First, let's create
 some artificial data to work with:
 
@@ -60,6 +80,10 @@ X = torch.cat([
     torch.randn(10000, 8),
     torch.randn(10000, 8) + 5,
 ])
+=======
+```bash
+pip install git+https://github.com/marcovarrone/torchgmm.git@main
+>>>>>>> theirs
 ```
 
 This dataset consists of three clusters with 8-dimensional datapoints. If you want to fit a K-Means
@@ -108,15 +132,35 @@ In fact, **you do not need to change anything else in your code**.
 
 ### Implemented Models
 
+<<<<<<< ours
 Currently, TorchGMM implements two different models:
+=======
+See the [changelog][].
+>>>>>>> theirs
 
 - [GaussianMixture](https://pycave.borchero.com/sites/generated/bayes/gmm/pycave.bayes.GaussianMixture.html)
 - [K-Means](https://pycave.borchero.com/sites/generated/clustering/kmeans/pycave.clustering.KMeans.html)
 
+<<<<<<< ours
 ## Contribution
+=======
+For questions and help requests, you can reach out in the [scverse discourse][].
+If you found a bug, please use the [issue tracker][].
+>>>>>>> theirs
 
 If you found a bug or you want to propose a new feature, please use the [issue tracker](https://github.com/CSOgroup/cellcharter/issues).
 
 ## License
 
+<<<<<<< ours
 TorchGMM is licensed under the [MIT License](https://github.com/marcovarrone/torchgmm/blob/main/LICENSE).
+=======
+[uv]: https://github.com/astral-sh/uv
+[scverse discourse]: https://discourse.scverse.org/
+[issue tracker]: https://github.com/marcovarrone/torchgmm/issues
+[tests]: https://github.com/marcovarrone/torchgmm/actions/workflows/test.yaml
+[documentation]: https://torchgmm.readthedocs.io
+[changelog]: https://torchgmm.readthedocs.io/en/latest/changelog.html
+[api documentation]: https://torchgmm.readthedocs.io/en/latest/api.html
+[pypi]: https://pypi.org/project/torchgmm
+>>>>>>> theirs
