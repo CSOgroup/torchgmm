@@ -161,6 +161,7 @@ def test_cholesky_logdet_tied(covars: torch.Tensor):
         sample_data([10, 50, 100], [3, 50, 100]),
         sample_means([70, 5, 200], [3, 50, 100]),
         sample_spherical_covars([70, 5, 200]),
+        strict=False,
     ),
 )
 def test_log_normal_spherical(x: torch.Tensor, means: torch.Tensor, covars: torch.Tensor):
@@ -176,6 +177,7 @@ def test_log_normal_spherical(x: torch.Tensor, means: torch.Tensor, covars: torc
         sample_data([10, 50, 100], [3, 50, 100]),
         sample_means([70, 5, 200], [3, 50, 100]),
         sample_diag_covars([70, 5, 200], [3, 50, 100]),
+        strict=False,
     ),
 )
 def test_log_normal_diag(x: torch.Tensor, means: torch.Tensor, covars: torch.Tensor):
@@ -191,6 +193,7 @@ def test_log_normal_diag(x: torch.Tensor, means: torch.Tensor, covars: torch.Ten
         sample_data([10, 50, 100], [3, 50, 100]),
         sample_means([70, 5, 200], [3, 50, 100]),
         sample_full_covars([70, 5, 200], [3, 50, 100]),
+        strict=False,
     ),
 )
 def test_log_normal_full(x: torch.Tensor, means: torch.Tensor, covars: torch.Tensor):
@@ -205,6 +208,7 @@ def test_log_normal_full(x: torch.Tensor, means: torch.Tensor, covars: torch.Ten
         sample_data([10, 50, 100], [3, 50, 100]),
         sample_means([70, 5, 200], [3, 50, 100]),
         sample_full_covars([1, 1, 1], [3, 50, 100]),
+        strict=False,
     ),
 )
 def test_log_normal_tied(x: torch.Tensor, means: torch.Tensor, covars: torch.Tensor):
