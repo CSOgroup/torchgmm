@@ -4,7 +4,7 @@ requires = [ "hatchling" ]
 
 [project]
 name = "torchgmm"
-version = "0.0.1"
+version = "0.1.2"
 description = "Run Gaussian Mixture Models on single or multiple CPUs/GPUs"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -26,6 +26,10 @@ dependencies = [
   "anndata",
   # for debug logging (referenced from the issue template)
   "session-info2",
+  "numpy>=1.20.3,<2.0.0",
+  "pytorch-lightning>=2.0.0",
+  "torch>1.11.0",
+  "torchmetrics>=0.6"
 ]
 optional-dependencies.dev = [
   "pre-commit",
@@ -50,6 +54,9 @@ optional-dependencies.doc = [
 optional-dependencies.test = [
   "coverage",
   "pytest",
+  "flaky",
+  "pytest-benchmark",
+  "scikit-learn"
 ]
 # https://docs.pypi.org/project_metadata/#project-urls
 urls.Documentation = "https://torchgmm.readthedocs.io/"
