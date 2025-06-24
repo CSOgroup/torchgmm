@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Tuple
 
 import numpy as np
 import torch
@@ -90,7 +89,7 @@ class GaussianMixtureModel(Configurable[GaussianMixtureModelConfig], nn.Module):
         if self.covariance_type in ("full", "tied"):
             self.precisions_cholesky.tril_()
 
-    def forward(self, data: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, data: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         """
         Computes the log-probability of observing each of the provided datapoints for each of the
         GMM's components.
