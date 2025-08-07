@@ -7,7 +7,7 @@ name = "torchgmm"
 version = "0.1.2"
 description = "Run Gaussian Mixture Models on single or multiple CPUs/GPUs"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.8,<3.14"
 license = {file = "LICENSE"}
 authors = [
     {name = "Marco Varrone"},
@@ -22,7 +22,7 @@ dependencies = [
     "anndata",
     # for debug logging (referenced from the issue template)
     "session-info",
-    "numpy>=1.20.3,<2.0.0",
+    "numpy>=1.20.3",
     "pytorch-lightning>=2.0.0",
     "torch>1.11.0",
     "torchmetrics>=0.6"
