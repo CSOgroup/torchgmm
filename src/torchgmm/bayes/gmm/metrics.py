@@ -133,7 +133,7 @@ class CovarianceAggregator(Metric):
         if self.covariance_type == "diag":
             return self.covariance_sum / self.component_weights.unsqueeze(-1) + self.reg
         if self.covariance_type == "spherical":
-            return self.covariance_sum / self.component_weights + self.reg * self.num_features
+            return self.covariance_sum / self.component_weights + self.reg
         if self.covariance_type == "tied":
             result = self.covariance_sum / self.component_weights.sum()
             shape = result.size()
