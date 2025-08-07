@@ -26,7 +26,6 @@ TorchGMM models against scikit-learn models is available on the
   [PyTorch Lightning](https://lightning.ai/docs/pytorch/stable/)
 - Mini-batch training for all models such that they can be used on huge datasets
 - Well-structured implementation of models
-
     - High-level `Estimator` API allows for easy usage such that models feel and behave like in
       scikit-learn
     - Medium-level `LightingModule` implements the training algorithm
