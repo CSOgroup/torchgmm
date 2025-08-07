@@ -102,10 +102,16 @@ class CovarianceAggregator(Metric):
         self.component_weights.add_(data_component_weights)
 
         if self.covariance_type in ("spherical", "diag"):
+            # For diagonal and spherical covariances we can rely on the identity
+            # Var[X] = E[X^2] - (E[X])^2.  The component means ("means" argument)
+            # correspond to the running estimate of E[X] for each component, while
+            # ``x_prob`` accumulates the weighted sum of X^2 for each component.
+            # We therefore accumulate the *unnormalised* numerator
+            #   nk * Var[X] = (∑ r_i x_i^2) - nk * μ^2
+            # and perform the normalisation (= divide by nk) in ``compute``.
             x_prob = torch.matmul(responsibilities.t(), data.square())
             m_prob = data_component_weights.unsqueeze(-1) * means.square()
-            xm_prob = means * torch.matmul(responsibilities.t(), data)
-            covars = x_prob - 2 * xm_prob + m_prob
+            covars = x_prob - m_prob
             if self.covariance_type == "diag":
                 self.covariance_sum.add_(covars)
             else:  # covariance_type == "spherical"
