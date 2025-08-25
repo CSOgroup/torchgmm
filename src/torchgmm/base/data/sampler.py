@@ -1,5 +1,5 @@
 import math
-from typing import Iterator
+from collections.abc import Iterator
 
 from torch.utils.data import Sampler
 from torch.utils.data.sampler import SequentialSampler
