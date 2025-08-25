@@ -1,6 +1,5 @@
 # pylint: disable=missing-function-docstring
 import math
-from typing import Optional
 
 import pytest
 import torch
@@ -60,7 +59,7 @@ def test_fit_converged(num_epochs: int, converged: bool):
 )
 def test_fit_inertia(
     num_datapoints: int,
-    batch_size: Optional[int],
+    batch_size: int | None,
     num_features: int,
     num_centroids: int,
 ):
