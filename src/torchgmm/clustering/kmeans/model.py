@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Tuple
 
 import torch
 from torch import jit, nn
@@ -52,7 +51,7 @@ class KMeansModel(Configurable[KMeansModelConfig], nn.Module):
         """
         nn.init.normal_(self.centroids)
 
-    def forward(self, data: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    def forward(self, data: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
         Computes the distance of each datapoint to each centroid as well as the "inertia", the
         squared distance of each datapoint to its closest centroid.
