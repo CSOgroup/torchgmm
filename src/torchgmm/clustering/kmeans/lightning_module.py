@@ -1,6 +1,6 @@
 # pylint: disable=abstract-method
 import math
-from typing import List, Literal
+from typing import Literal
 
 import pytorch_lightning as pl
 import torch
@@ -56,7 +56,7 @@ class KMeansLightningModule(NonparametricLightningModule):
         # Initialize metrics
         self.metric_inertia = MeanMetric()
 
-    def configure_callbacks(self) -> List[pl.Callback]:
+    def configure_callbacks(self) -> list[pl.Callback]:
         if self.convergence_tolerance == 0:
             return []
         early_stopping = EarlyStopping(
