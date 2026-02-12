@@ -1,5 +1,5 @@
 import math
-from typing import Iterator
+from collections.abc import Iterator
 
 from torch.utils.data import Sampler
 from torch.utils.data.sampler import SequentialSampler
@@ -24,7 +24,7 @@ class RangeBatchSampler(Sampler[range]):
         """
         assert isinstance(sampler, SequentialSampler), f"{self.__class__.__name__} only works with sequential samplers."
 
-        super().__init__(None)
+        super().__init__()
         self.dataset_size = len(sampler)
         self.batch_size = batch_size
         self.drop_last = drop_last
