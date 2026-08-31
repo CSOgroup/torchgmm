@@ -1,4 +1,5 @@
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 import torch
 from torchmetrics import Metric
@@ -17,7 +18,7 @@ class PriorAggregator(Metric):
         self,
         num_components: int,
         *,
-        dist_sync_fn: Optional[Callable[[Any], Any]] = None,
+        dist_sync_fn: Callable[[Any], Any] | None = None,
     ):
         super().__init__(dist_sync_fn=dist_sync_fn)  # type: ignore
 
@@ -44,7 +45,7 @@ class MeanAggregator(Metric):
         num_components: int,
         num_features: int,
         *,
-        dist_sync_fn: Optional[Callable[[Any], Any]] = None,
+        dist_sync_fn: Callable[[Any], Any] | None = None,
     ):
         super().__init__(dist_sync_fn=dist_sync_fn)  # type: ignore
 
@@ -78,7 +79,7 @@ class CovarianceAggregator(Metric):
         covariance_type: CovarianceType,
         reg: float,
         *,
-        dist_sync_fn: Optional[Callable[[Any], Any]] = None,
+        dist_sync_fn: Callable[[Any], Any] | None = None,
     ):
         super().__init__(dist_sync_fn=dist_sync_fn)  # type: ignore
 
