@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import List
 
 import pytorch_lightning as pl
 import torch
@@ -32,7 +31,7 @@ class NonparametricLightningModule(pl.LightningModule, ABC):
             self.nonparametric_training_epoch_end()
     else:
 
-        def training_epoch_end(self, outputs: List[torch.Tensor]) -> None:
+        def training_epoch_end(self, outputs: list[torch.Tensor]) -> None:
             """Training epoch end hook for PyTorch Lightning < 2.0.0."""
             self.nonparametric_training_epoch_end()
 

@@ -1,5 +1,4 @@
 # pylint: disable=missing-function-docstring
-from typing import Optional
 
 import pytest
 import pytorch_lightning as pl
@@ -72,7 +71,7 @@ def test_torchgmm(
     num_features: int,
     num_components: int,
     covariance_type: CovarianceType,
-    batch_size: Optional[int],
+    batch_size: int | None,
 ):
     pl.seed_everything(0)
     data, means = sample_gmm(num_datapoints, num_features, num_components, covariance_type)
@@ -115,7 +114,7 @@ def test_torchgmm_gpu(
     num_features: int,
     num_components: int,
     covariance_type: CovarianceType,
-    batch_size: Optional[int],
+    batch_size: int | None,
 ):
     # Initialize GPU
     torch.empty(1, device="cuda:0")
