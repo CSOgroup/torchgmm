@@ -1,4 +1,5 @@
-from typing import Any, Iterator, TypeVar
+from collections.abc import Iterator
+from typing import Any, TypeVar
 
 try:
     from pytorch_lightning.overrides.distributed import _IndexBatchSamplerWrapper as IndexBatchSamplerWrapper

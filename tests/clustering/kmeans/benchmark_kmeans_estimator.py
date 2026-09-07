@@ -1,5 +1,4 @@
 # pylint: disable=missing-function-docstring
-from typing import Optional
 
 import pytest
 import pytorch_lightning as pl
@@ -66,7 +65,7 @@ def test_sklearn(
 def test_torchgmm(
     benchmark: BenchmarkFixture,
     num_datapoints: int,
-    batch_size: Optional[int],
+    batch_size: int | None,
     num_features: int,
     num_centroids: int,
     init_strategy: KMeansInitStrategy,
@@ -106,7 +105,7 @@ def test_torchgmm(
 def test_torchgmm_gpu(
     benchmark: BenchmarkFixture,
     num_datapoints: int,
-    batch_size: Optional[int],
+    batch_size: int | None,
     num_features: int,
     num_centroids: int,
     init_strategy: KMeansInitStrategy,
