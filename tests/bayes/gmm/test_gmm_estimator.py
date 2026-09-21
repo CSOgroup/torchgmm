@@ -1,6 +1,5 @@
 # pylint: disable=missing-function-docstring
 import math
-from typing import Optional
 
 import pytest
 import torch
@@ -23,7 +22,7 @@ def test_fit_model_config():
 
 
 @pytest.mark.parametrize("batch_size", [2, None])
-def test_fit_num_iter(batch_size: Optional[int]):
+def test_fit_num_iter(batch_size: int | None):
     # For the following data, K-means will find centroids [0.5, 3.5]. The estimator first computes
     # the NLL (first iteration), afterwards there is no improvmement in the NLL (second iteration).
     data = torch.as_tensor([[0.0], [1.0], [3.0], [4.0]])
@@ -41,7 +40,7 @@ def test_fit_num_iter(batch_size: Optional[int]):
     ("batch_size", "max_epochs", "converged"),
     [(2, 1, False), (2, 3, True), (None, 1, False), (None, 3, True)],
 )
-def test_fit_converged(batch_size: Optional[int], max_epochs: int, converged: bool):
+def test_fit_converged(batch_size: int | None, max_epochs: int, converged: bool):
     data = torch.as_tensor([[0.0], [1.0], [3.0], [4.0]])
 
     estimator = GaussianMixture(

@@ -1,5 +1,6 @@
 # pylint: disable=protected-access,missing-function-docstring
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 import numpy as np
 import sklearn.mixture._gaussian_mixture as skgmm  # type: ignore
