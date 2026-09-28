@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, List, Tuple, cast
+from typing import Any, cast
 
 import numpy as np
 import torch
@@ -272,7 +272,7 @@ class GaussianMixture(
             collate_fn=collate_tensor,
         )
         result = self.trainer().predict(GaussianMixtureLightningModule(self.model_), loader)
-        return torch.stack([x[1] for x in cast(List[Tuple[torch.Tensor, torch.Tensor]], result)])
+        return torch.stack([x[1] for x in cast(list[tuple[torch.Tensor, torch.Tensor]], result)])
 
     def predict(self, data: TensorLike) -> torch.Tensor:
         """
@@ -321,4 +321,4 @@ class GaussianMixture(
             collate_fn=collate_tensor,
         )
         result = self.trainer().predict(GaussianMixtureLightningModule(self.model_), loader)
-        return torch.cat([x[0] for x in cast(List[Tuple[torch.Tensor, torch.Tensor]], result)])
+        return torch.cat([x[0] for x in cast(list[tuple[torch.Tensor, torch.Tensor]], result)])
