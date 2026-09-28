@@ -1,26 +1,25 @@
 # pylint: disable=missing-function-docstring
-from typing import List
 
 import torch
 
 
-def sample_data(counts: List[int], dims: List[int]) -> List[torch.Tensor]:
+def sample_data(counts: list[int], dims: list[int]) -> list[torch.Tensor]:
     return [torch.randn(count, dim) for count, dim in zip(counts, dims)]
 
 
-def sample_means(counts: List[int], dims: List[int]) -> List[torch.Tensor]:
+def sample_means(counts: list[int], dims: list[int]) -> list[torch.Tensor]:
     return [torch.randn(count, dim) for count, dim in zip(counts, dims)]
 
 
-def sample_spherical_covars(counts: List[int]) -> List[torch.Tensor]:
+def sample_spherical_covars(counts: list[int]) -> list[torch.Tensor]:
     return [torch.rand(count) for count in counts]
 
 
-def sample_diag_covars(counts: List[int], dims: List[int]) -> List[torch.Tensor]:
+def sample_diag_covars(counts: list[int], dims: list[int]) -> list[torch.Tensor]:
     return [torch.rand(count, dim).squeeze() for count, dim in zip(counts, dims)]
 
 
-def sample_full_covars(counts: List[int], dims: List[int]) -> List[torch.Tensor]:
+def sample_full_covars(counts: list[int], dims: list[int]) -> list[torch.Tensor]:
     result = []
     for count, dim in zip(counts, dims):
         A = torch.rand(count, dim * 10, dim)
