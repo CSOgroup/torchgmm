@@ -1,7 +1,7 @@
-from typing import Any, Type, get_args, get_origin
+from typing import Any, get_args, get_origin
 
 
-def get_generic_type(cls: Type[Any], origin: Type[Any], index: int = 0) -> Type[Any]:
+def get_generic_type(cls: type[Any], origin: type[Any], index: int = 0) -> type[Any]:
     """
     Returns the ``index``-th generic type of the superclass ``origin``.
 
