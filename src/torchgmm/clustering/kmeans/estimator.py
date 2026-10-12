@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, List, cast
+from typing import Any, cast
 
 import numpy as np
 import torch
@@ -188,7 +188,7 @@ class KMeans(
             collate_fn=collate_tensor,
         )
         result = self.trainer().predict(KMeansLightningModule(self.model_, predict_target="assignments"), loader)
-        return torch.cat(cast(List[torch.Tensor], result))
+        return torch.cat(cast(list[torch.Tensor], result))
 
     def score(self, data: TensorLike) -> float:
         """
@@ -236,7 +236,7 @@ class KMeans(
             collate_fn=collate_tensor,
         )
         result = self.trainer().predict(KMeansLightningModule(self.model_, predict_target="inertias"), loader)
-        return torch.cat(cast(List[torch.Tensor], result))
+        return torch.cat(cast(list[torch.Tensor], result))
 
     def transform(self, data: TensorLike) -> torch.Tensor:
         """
@@ -262,4 +262,4 @@ class KMeans(
             collate_fn=collate_tensor,
         )
         result = self.trainer().predict(KMeansLightningModule(self.model_, predict_target="distances"), loader)
-        return torch.cat(cast(List[torch.Tensor], result))
+        return torch.cat(cast(list[torch.Tensor], result))
