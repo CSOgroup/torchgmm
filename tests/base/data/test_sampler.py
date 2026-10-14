@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 from torch.utils.data.distributed import DistributedSampler
 from torch.utils.data.sampler import SequentialSampler
