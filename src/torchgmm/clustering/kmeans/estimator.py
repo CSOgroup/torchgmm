@@ -143,9 +143,11 @@ class KMeans(
         if self.convergence_tolerance != 0:
             variances = torch.empty(config.num_features)
             module = FeatureVarianceLightningModule(variances)
-            self.trainer(enable_progress_bar=False).fit(module, loader)
+            self.trainer(max_epochs=2, enable_progress_bar=False).fit(module, loader)
 
-            tolerance_multiplier = cast(float, variances.mean().item())
+            # The module's buffer is replaced when moving it to another device, so we need to read
+            # the variances from the module rather than from the tensor that was passed.
+            tolerance_multiplier = cast(float, module.variances.mean().item())
             convergence_tolerance = self.convergence_tolerance * tolerance_multiplier
         else:
             convergence_tolerance = 0

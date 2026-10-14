@@ -50,7 +50,7 @@ class KMeansLightningModule(NonparametricLightningModule):
         self.centroid_aggregator = CentroidAggregator(
             num_clusters=self.model.config.num_clusters,
             num_features=self.model.config.num_features,
-            dist_sync_fn=self.all_gather,
+            dist_sync_fn=self.all_gather_list,
         )
 
         # Initialize metrics
@@ -69,6 +69,7 @@ class KMeansLightningModule(NonparametricLightningModule):
 
     def on_train_epoch_start(self) -> None:
         self.centroid_aggregator.reset()
+        self.metric_inertia.reset()
 
     def nonparametric_training_step(self, batch: torch.Tensor, batch_idx: int) -> None:
         # First, we compute the cluster assignments
@@ -77,11 +78,14 @@ class KMeansLightningModule(NonparametricLightningModule):
         # Then, we update the centroids
         self.centroid_aggregator.update(batch, assignments)
 
-        # And log the inertia
+        # And track the inertia
         self.metric_inertia.update(inertias)
-        self.log("inertia", self.metric_inertia, on_step=False, on_epoch=True, prog_bar=True)
 
     def nonparametric_training_epoch_end(self) -> None:
+        # The inertia is computed explicitly (rather than logging the metric object) such that
+        # metric synchronization happens at the same time on all processes in distributed training.
+        self.log("inertia", self.metric_inertia.compute(), prog_bar=True)
+
         centroids = self.centroid_aggregator.compute()
         self.log("frobenius_norm_change", torch.linalg.norm(self.model.centroids - centroids))
         self.model.centroids.copy_(centroids)
@@ -176,7 +180,7 @@ class KmeansPlusPlusInitLightningModule(NonparametricLightningModule):
         )
         self.candidate_inertia_summer = BatchSummer(
             num_candidates,
-            dist_sync_fn=self.all_gather,
+            dist_sync_fn=self.all_gather_list,
         )
 
         # Some buffers required for running initialization
@@ -281,12 +285,12 @@ class FeatureVarianceLightningModule(NonparametricLightningModule):
         self.mean_aggregator = BatchAverager(
             num_values=variances.size(0),
             for_variance=False,
-            dist_sync_fn=self.all_gather,
+            dist_sync_fn=self.all_gather_list,
         )
         self.variance_aggregator = BatchAverager(
             num_values=variances.size(0),
             for_variance=True,
-            dist_sync_fn=self.all_gather,
+            dist_sync_fn=self.all_gather_list,
         )
 
         self.means: torch.Tensor

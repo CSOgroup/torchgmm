@@ -52,23 +52,23 @@ class GaussianMixtureLightningModule(NonparametricLightningModule):
         # Initialize aggregators
         self.prior_aggregator = PriorAggregator(
             num_components=self.model.config.num_components,
-            dist_sync_fn=self.all_gather,
+            dist_sync_fn=self.all_gather_list,
         )
         self.mean_aggregator = MeanAggregator(
             num_components=self.model.config.num_components,
             num_features=self.model.config.num_features,
-            dist_sync_fn=self.all_gather,
+            dist_sync_fn=self.all_gather_list,
         )
         self.covar_aggregator = CovarianceAggregator(
             num_components=self.model.config.num_components,
             num_features=self.model.config.num_features,
             covariance_type=self.model.config.covariance_type,
             reg=covariance_regularization,
-            dist_sync_fn=self.all_gather,
+            dist_sync_fn=self.all_gather_list,
         )
 
         # Initialize metrics
-        self.metric_nll = MeanMetric(dist_sync_fn=self.all_gather)
+        self.metric_nll = MeanMetric(dist_sync_fn=self.all_gather_list)
 
     def configure_callbacks(self) -> list[pl.Callback]:
         if self.convergence_tolerance == 0:
@@ -86,6 +86,7 @@ class GaussianMixtureLightningModule(NonparametricLightningModule):
         self.prior_aggregator.reset()
         self.mean_aggregator.reset()
         self.covar_aggregator.reset()
+        self.metric_nll.reset()
 
     def nonparametric_training_step(self, batch: torch.Tensor, _batch_idx: int) -> None:
         ### E-Step
@@ -98,7 +99,6 @@ class GaussianMixtureLightningModule(NonparametricLightningModule):
         # Compute the NLL for early stopping
         if self._should_log_nll:
             self.metric_nll.update(-log_probs)
-            self.log("nll", self.metric_nll, on_step=False, on_epoch=True, prog_bar=True)
 
         ### (Partial) M-Step
         if self._should_update_means:
@@ -111,6 +111,11 @@ class GaussianMixtureLightningModule(NonparametricLightningModule):
             self.covar_aggregator.update(batch, responsibilities, self.model.means)
 
     def nonparametric_training_epoch_end(self) -> None:
+        # The NLL is computed explicitly (rather than logging the metric object) such that metric
+        # synchronization happens at the same time on all processes in distributed training.
+        if self._should_log_nll:
+            self.log("nll", self.metric_nll.compute(), prog_bar=True)
+
         # Prior to updating the model, we might need to copy it in the case of batch training
         if self._requires_to_copy_live_model:
             self.model_copy.load_state_dict(self.model.state_dict())
@@ -189,14 +194,14 @@ class GaussianMixtureKmeansInitLightningModule(NonparametricLightningModule):
 
         self.prior_aggregator = PriorAggregator(
             num_components=self.model.config.num_components,
-            dist_sync_fn=self.all_gather,
+            dist_sync_fn=self.all_gather_list,
         )
         self.covar_aggregator = CovarianceAggregator(
             num_components=self.model.config.num_components,
             num_features=self.model.config.num_features,
             covariance_type=self.model.config.covariance_type,
             reg=covariance_regularization,
-            dist_sync_fn=self.all_gather,
+            dist_sync_fn=self.all_gather_list,
         )
 
     def on_train_epoch_start(self) -> None:
@@ -252,19 +257,19 @@ class GaussianMixtureRandomInitLightningModule(NonparametricLightningModule):
 
         self.prior_aggregator = PriorAggregator(
             num_components=self.model.config.num_components,
-            dist_sync_fn=self.all_gather,
+            dist_sync_fn=self.all_gather_list,
         )
         self.mean_aggregator = MeanAggregator(
             num_components=self.model.config.num_components,
             num_features=self.model.config.num_features,
-            dist_sync_fn=self.all_gather,
+            dist_sync_fn=self.all_gather_list,
         )
         self.covar_aggregator = CovarianceAggregator(
             num_components=self.model.config.num_components,
             num_features=self.model.config.num_features,
             covariance_type=self.model.config.covariance_type,
             reg=covariance_regularization,
-            dist_sync_fn=self.all_gather,
+            dist_sync_fn=self.all_gather_list,
         )
 
         # For batch training, we store a model copy such that we can "replay" responsibilities

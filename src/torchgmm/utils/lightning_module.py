@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Any, List, Optional
 
 import pytorch_lightning as pl
 import torch
@@ -46,14 +47,29 @@ class NonparametricLightningModule(pl.LightningModule, ABC):
         Does nothing by default.
         """
 
-    def all_gather_first(self, x: torch.Tensor) -> torch.Tensor:
+    def all_gather_list(self, x: torch.Tensor, group: Optional[Any] = None) -> List[torch.Tensor]:
+        """
+        Gathers the provided tensor from all processes and returns one tensor per process.
+
+        This function is meant to be used as ``dist_sync_fn`` of :mod:`torchmetrics` metrics,
+        which expect a list of tensors (one per process) and pass a ``group`` argument.
+        """
+        gathered = self.all_gather(x, group=group)
+        if gathered.dim() > x.dim():
+            return list(gathered.unbind(0))
+        return [x]
+
+    def all_gather_first(self, x: torch.Tensor, group: Optional[Any] = None) -> List[torch.Tensor]:
         """
         Gathers the provided tensor from all processes.
 
         If more than one process is available, chooses the value of the first process in every
-        process.
+        process. Like :meth:`all_gather_list`, this function is meant to be used as
+        ``dist_sync_fn`` of :mod:`torchmetrics` metrics: the returned list is stacked by
+        :mod:`torchmetrics` such that the metric state retains its original shape.
         """
-        gathered = self.all_gather(x)
-        if gathered.dim() > x.dim():
-            return gathered[0]
-        return x
+        gathered = self.all_gather(x, group=group)
+        first = gathered[0] if gathered.dim() > x.dim() else x
+        if first.dim() == 0:
+            return [first]
+        return list(first.unbind(0))
