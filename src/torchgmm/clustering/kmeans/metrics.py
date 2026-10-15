@@ -165,8 +165,10 @@ class DistanceSampler(Metric):
             # choices now have shape [num_choices, num_processes, num_features]
             choices = self.choices.reshape(-1, self.num_choices, self.num_features).transpose(0, 1)
             # For each choice, we sample across processes, weighted by their cumulative distances
+            # (which may all be zero, e.g. if all datapoints are equal)
+            eps = torch.finfo(self.cumulative_squared_distance.dtype).eps
             choice_indices = torch.arange(self.num_choices, device=self.choices.device)
-            process_indices = self.cumulative_squared_distance.reshape(-1).multinomial(
+            process_indices = (self.cumulative_squared_distance.reshape(-1) + eps).multinomial(
                 self.num_choices, replacement=True
             )
             return choices[choice_indices, process_indices]
