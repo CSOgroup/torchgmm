@@ -297,7 +297,7 @@ class FeatureVarianceLightningModule(NonparametricLightningModule):
         self.register_buffer("means", torch.empty(variances.size(0)), persistent=False)
 
         self.variances: torch.Tensor
-        self.register_buffer("variances", variances, persistent=False)
+        self.register_buffer("variances", variances)
 
     def nonparametric_training_step(self, batch: torch.Tensor, batch_idx: int) -> None:
         if self.current_epoch == 0:

@@ -145,8 +145,9 @@ class KMeans(
             module = FeatureVarianceLightningModule(variances)
             self.trainer(max_epochs=2, enable_progress_bar=False).fit(module, loader)
 
-            # The module's buffer is replaced when moving it to another device, so we need to read
-            # the variances from the module rather than from the tensor that was passed.
+            # The module's buffer is replaced when moving it to another device (and only restored
+            # via the module's state dict when training in spawned/forked processes), so we need to
+            # read the variances from the module rather than from the tensor that was passed.
             tolerance_multiplier = cast(float, module.variances.mean().item())
             convergence_tolerance = self.convergence_tolerance * tolerance_multiplier
         else:
@@ -161,8 +162,8 @@ class KMeans(
         trainer.fit(module, loader)
 
         # Assign convergence properties
-        self.num_iter_ = module.current_epoch
-        self.converged_ = module.current_epoch < trainer.max_epochs
+        self.num_iter_ = int(module.fit_num_epochs.item())
+        self.converged_ = self.num_iter_ < cast(int, trainer.max_epochs)
         if "inertia" in trainer.callback_metrics:
             self.inertia_ = cast(float, trainer.callback_metrics["inertia"].item())
         return self

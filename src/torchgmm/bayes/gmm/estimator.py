@@ -204,10 +204,10 @@ class GaussianMixture(
         trainer.fit(module, loader)
 
         # Assign convergence properties
-        self.num_iter_ = module.current_epoch
+        self.num_iter_ = int(module.fit_num_epochs.item())
         if is_batch_training:
             self.num_iter_ //= 2
-        self.converged_ = trainer.should_stop
+        self.converged_ = bool(module.fit_stopped_early.item())
         self.nll_ = cast(float, trainer.callback_metrics["nll"].item())
         return self
 

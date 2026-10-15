@@ -17,6 +17,13 @@ class NonparametricLightningModule(pl.LightningModule, ABC):
         # Required parameter to make DDP training work
         self.register_parameter("__ddp_dummy__", nn.Parameter(torch.empty(1)))
 
+        # Information about the fitting procedure. These are stored as (persistent) buffers such
+        # that they are available in the main process when training in spawned/forked processes.
+        self.fit_num_epochs: torch.Tensor
+        self.register_buffer("fit_num_epochs", torch.zeros((), dtype=torch.long))
+        self.fit_stopped_early: torch.Tensor
+        self.register_buffer("fit_stopped_early", torch.zeros((), dtype=torch.bool))
+
     def configure_optimizers(self) -> None:
         """Configure optimizers hook from PyTorch Lightning."""
         return None
@@ -35,6 +42,11 @@ class NonparametricLightningModule(pl.LightningModule, ABC):
         def training_epoch_end(self, outputs: list[torch.Tensor]) -> None:
             """Training epoch end hook for PyTorch Lightning < 2.0.0."""
             self.nonparametric_training_epoch_end()
+
+    def on_train_end(self) -> None:
+        """Train end hook from PyTorch Lightning."""
+        self.fit_num_epochs.fill_(self.current_epoch)
+        self.fit_stopped_early.fill_(self.trainer.should_stop)
 
     @abstractmethod
     def nonparametric_training_step(self, batch: torch.Tensor, batch_idx: int) -> None:
