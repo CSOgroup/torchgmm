@@ -3,7 +3,7 @@ import json
 import math
 import subprocess
 import sys
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pytest
 import torch
@@ -52,7 +52,7 @@ def _data() -> torch.Tensor:
     return torch.cat([torch.randn(1001, 2, generator=generator) + m for m in means])
 
 
-def _fit_distributed(estimator_name: str, batch_size: Optional[int]) -> Dict[str, Any]:
+def _fit_distributed(estimator_name: str, batch_size: int | None) -> dict[str, Any]:
     output = subprocess.run(
         [sys.executable, "-c", SCRIPT, estimator_name, json.dumps(batch_size)],
         capture_output=True,
@@ -69,7 +69,7 @@ def _sorted(x: torch.Tensor) -> torch.Tensor:
 
 
 @pytest.mark.parametrize("batch_size", [None, 1000])
-def test_kmeans_ddp_fork(batch_size: Optional[int]):
+def test_kmeans_ddp_fork(batch_size: int | None):
     torch.manual_seed(0)
     single = KMeans(3, batch_size=batch_size).fit(_data())
     distributed = _fit_distributed("kmeans", batch_size)
@@ -81,7 +81,7 @@ def test_kmeans_ddp_fork(batch_size: Optional[int]):
 
 
 @pytest.mark.parametrize("batch_size", [None, 1000])
-def test_gmm_ddp_fork(batch_size: Optional[int]):
+def test_gmm_ddp_fork(batch_size: int | None):
     torch.manual_seed(0)
     single = GaussianMixture(3, covariance_type="diag", batch_size=batch_size).fit(_data())
     distributed = _fit_distributed("gmm", batch_size)

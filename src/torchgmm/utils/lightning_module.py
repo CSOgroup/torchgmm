@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional
+from typing import Any
 
 import pytorch_lightning as pl
 import torch
@@ -59,7 +59,7 @@ class NonparametricLightningModule(pl.LightningModule, ABC):
         Does nothing by default.
         """
 
-    def all_gather_list(self, x: torch.Tensor, group: Optional[Any] = None) -> List[torch.Tensor]:
+    def all_gather_list(self, x: torch.Tensor, group: Any | None = None) -> list[torch.Tensor]:
         """
         Gathers the provided tensor from all processes and returns one tensor per process.
 

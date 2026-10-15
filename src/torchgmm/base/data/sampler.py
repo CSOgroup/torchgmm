@@ -1,5 +1,5 @@
 import math
-from typing import Iterator
+from collections.abc import Iterator
 
 from torch.utils.data import Sampler
 from torch.utils.data.distributed import DistributedSampler
@@ -41,9 +41,9 @@ class RangeBatchSampler(Sampler[range]):
             # training time. It is ignored here since the order of the data is irrelevant for the
             # algorithms implemented in TorchGMM. However, the wrapped sampler must be sequential.
             wrapped = getattr(sampler.dataset, "_sampler", None)
-            assert wrapped is None or isinstance(
-                wrapped, SequentialSampler
-            ), f"{self.__class__.__name__} only works with sequential samplers."
+            assert wrapped is None or isinstance(wrapped, SequentialSampler), (
+                f"{self.__class__.__name__} only works with sequential samplers."
+            )
 
             # Split the dataset into contiguous shards whose sizes differ by at most one
             num_items = len(sampler.dataset)  # type: ignore
@@ -53,9 +53,9 @@ class RangeBatchSampler(Sampler[range]):
             max_num_items = base + int(remainder > 0)
             min_num_items = base
         else:
-            assert isinstance(
-                sampler, SequentialSampler
-            ), f"{self.__class__.__name__} only works with sequential samplers."
+            assert isinstance(sampler, SequentialSampler), (
+                f"{self.__class__.__name__} only works with sequential samplers."
+            )
             self.offset = 0
             self.num_items = len(sampler)
             max_num_items = min_num_items = self.num_items

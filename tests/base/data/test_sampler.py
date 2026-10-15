@@ -40,7 +40,7 @@ def test_distributed(num_items: int, batch_size: int, num_replicas: int, shuffle
 
     # All processes must run the same number of non-empty batches of at most the batch size
     assert len({len(s) for s in batch_samplers}) == 1
-    assert all(len(b) == len(s) for b, s in zip(batches, batch_samplers))
+    assert all(len(b) == len(s) for b, s in zip(batches, batch_samplers, strict=False))
     assert all(0 < len(batch) <= batch_size for b in batches for batch in b)
 
     # Processes receive contiguous shards which cover the dataset exactly once (no padding)
