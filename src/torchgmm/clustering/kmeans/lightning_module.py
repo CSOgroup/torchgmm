@@ -128,7 +128,7 @@ class KmeansRandomInitLightningModule(NonparametricLightningModule):
         self.sampler = UniformSampler(
             num_choices=self.model.config.num_clusters,
             num_features=self.model.config.num_features,
-            dist_sync_fn=self.all_gather_first,
+            dist_sync_fn=self.all_gather_list,
         )
 
     def on_train_epoch_start(self) -> None:
@@ -138,7 +138,8 @@ class KmeansRandomInitLightningModule(NonparametricLightningModule):
         self.sampler.update(batch)
 
     def nonparametric_training_epoch_end(self) -> None:
-        choices = self.sampler.compute()
+        # Choices are gathered from all processes but sampled independently on each of them
+        choices = self.broadcast_first(self.sampler.compute())
         self.model.centroids.copy_(choices)
 
 
@@ -170,13 +171,13 @@ class KmeansPlusPlusInitLightningModule(NonparametricLightningModule):
         self.uniform_sampler = UniformSampler(
             num_choices=1,
             num_features=self.model.config.num_features,
-            dist_sync_fn=self.all_gather_first,
+            dist_sync_fn=self.all_gather_list,
         )
         num_candidates = 2 + int(math.log(self.model.config.num_clusters))
         self.distance_sampler = DistanceSampler(
             num_choices=num_candidates,
             num_features=self.model.config.num_features,
-            dist_sync_fn=self.all_gather_first,
+            dist_sync_fn=self.all_gather_list,
         )
         self.candidate_inertia_summer = BatchSummer(
             num_candidates,
@@ -245,10 +246,11 @@ class KmeansPlusPlusInitLightningModule(NonparametricLightningModule):
 
     def nonparametric_training_epoch_end(self) -> None:
         if self.current_epoch == 0:
-            choice = self.uniform_sampler.compute()
+            # Choices are gathered from all processes but sampled independently on each of them
+            choice = self.broadcast_first(self.uniform_sampler.compute())
             self.model.centroids[0].copy_(choice[0] if choice.dim() > 0 else choice)
         elif self._is_current_epoch_sampling:
-            candidates = self.distance_sampler.compute()
+            candidates = self.broadcast_first(self.distance_sampler.compute())
             self.centroid_candidates.copy_(candidates)
         else:
             new_inertias = self.candidate_inertia_summer.compute()

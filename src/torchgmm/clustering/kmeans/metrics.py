@@ -100,11 +100,13 @@ class UniformSampler(Metric):
         self.choice_weights.add_(data.size(0) / self.num_choices)
 
     def compute(self) -> torch.Tensor:
-        # In the ddp setting, there are "too many" choices, so we sample
-        if self.choices.size(0) > self.num_choices:
-            samples = self.choice_weights.multinomial(self.num_choices)
-            return self.choices[samples]
-        return self.choices
+        # In the ddp setting, there are "too many" choices (gathered from all processes, possibly
+        # stacked), so we sample. Note that each process may sample different choices.
+        choices = self.choices.reshape(-1, self.choices.size(-1))
+        if choices.size(0) > self.num_choices:
+            samples = self.choice_weights.reshape(-1).multinomial(self.num_choices)
+            return choices[samples]
+        return choices
 
 
 class DistanceSampler(Metric):
@@ -157,16 +159,19 @@ class DistanceSampler(Metric):
         self.cumulative_squared_distance.add_(data_dist)
 
     def compute(self) -> torch.Tensor:
-        # Upon computation, we sample if there is more than one choice (ddp setting)
-        if self.choices.size(0) > self.num_choices:
+        # Upon computation, we sample if there is more than one choice (ddp setting). Note that
+        # each process may sample different choices.
+        if self.choices.numel() > self.num_choices * self.num_features:
             # choices now have shape [num_choices, num_processes, num_features]
             choices = self.choices.reshape(-1, self.num_choices, self.num_features).transpose(0, 1)
-            # For each choice, we sample across processes
+            # For each choice, we sample across processes, weighted by their cumulative distances
             choice_indices = torch.arange(self.num_choices, device=self.choices.device)
-            process_indices = self.cumulative_squared_distance.multinomial(self.num_choices, replacement=True)
+            process_indices = self.cumulative_squared_distance.reshape(-1).multinomial(
+                self.num_choices, replacement=True
+            )
             return choices[choice_indices, process_indices]
         # Otherwise, we can return the choices
-        return self.choices
+        return self.choices.reshape(self.num_choices, self.num_features)
 
 
 class BatchSummer(Metric):

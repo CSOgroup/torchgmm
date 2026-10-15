@@ -29,7 +29,13 @@ data = torch.cat([torch.randn(1001, 2, generator=generator) + m for m in means])
 params = {"accelerator": "cpu", "devices": 2, "strategy": "ddp_fork", "enable_progress_bar": False}
 
 torch.manual_seed(0)
-if estimator_name == "kmeans":
+if estimator_name == "kmeans_init":
+    # Each process receives one of the clusters. Running zero epochs only performs the k-means++
+    # initialization.
+    data = torch.cat([torch.randn(1000, 2, generator=generator) - 100, torch.randn(1000, 2, generator=generator) + 100])
+    estimator = KMeans(2, trainer_params={**params, "max_epochs": 0}).fit(data)
+    result = {"centers": estimator.model_.centroids.tolist(), "score": 0.0}
+elif estimator_name == "kmeans":
     estimator = KMeans(3, batch_size=batch_size, trainer_params=params).fit(data)
     result = {"centers": estimator.model_.centroids.tolist(), "score": estimator.inertia_}
 else:
@@ -84,3 +90,10 @@ def test_gmm_ddp_fork(batch_size: Optional[int]):
     assert distributed["num_iter"] > 0
     assert torch.allclose(_sorted(torch.tensor(distributed["centers"])), _sorted(single.model_.means), atol=1e-3)
     assert math.isclose(distributed["score"], single.nll_, rel_tol=1e-4)
+
+
+def test_kmeans_init_ddp_fork():
+    # The initial centroids must be chosen from the data of all processes
+    distributed = _fit_distributed("kmeans_init", None)
+    centers = _sorted(torch.tensor(distributed["centers"]))
+    assert torch.allclose(centers, torch.tensor([[-100.0, -100.0], [100.0, 100.0]]), atol=5)

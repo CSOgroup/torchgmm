@@ -154,7 +154,7 @@ class GaussianMixture(
             batch_size=self.batch_size or len(data),
             collate_fn=collate_tensor,
         )
-        is_batch_training = self._num_batches_per_epoch(loader) == 1
+        is_batch_training = self._num_batches_per_epoch(loader) > 1
 
         # Run k-means if required or copy means
         if self.init_means is not None:

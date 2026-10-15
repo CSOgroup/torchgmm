@@ -71,17 +71,13 @@ class NonparametricLightningModule(pl.LightningModule, ABC):
             return list(gathered.unbind(0))
         return [x]
 
-    def all_gather_first(self, x: torch.Tensor, group: Optional[Any] = None) -> List[torch.Tensor]:
+    def broadcast_first(self, x: torch.Tensor) -> torch.Tensor:
         """
-        Gathers the provided tensor from all processes.
+        Returns the value of the provided tensor in the first process in every process.
 
-        If more than one process is available, chooses the value of the first process in every
-        process. Like :meth:`all_gather_list`, this function is meant to be used as
-        ``dist_sync_fn`` of :mod:`torchmetrics` metrics: the returned list is stacked by
-        :mod:`torchmetrics` such that the metric state retains its original shape.
+        This is required for values which are computed independently (e.g. randomly) on each
+        process, but must be the same across processes.
         """
-        gathered = self.all_gather(x, group=group)
-        first = gathered[0] if gathered.dim() > x.dim() else x
-        if first.dim() == 0:
-            return [first]
-        return list(first.unbind(0))
+        # The tensor is moved to the CPU such that it is not received on the device of the first
+        # process
+        return self.trainer.strategy.broadcast(x.cpu(), src=0).to(x.device)
