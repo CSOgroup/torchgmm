@@ -1,5 +1,6 @@
 import random
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 import torch
 from torchmetrics import Metric
@@ -17,7 +18,7 @@ class CentroidAggregator(Metric):
         num_clusters: int,
         num_features: int,
         *,
-        dist_sync_fn: Optional[Callable[[Any], Any]] = None,
+        dist_sync_fn: Callable[[Any], Any] | None = None,
     ):
         super().__init__(dist_sync_fn=dist_sync_fn)  # type: ignore
 
@@ -61,7 +62,7 @@ class UniformSampler(Metric):
         num_choices: int,
         num_features: int,
         *,
-        dist_sync_fn: Optional[Callable[[Any], Any]] = None,
+        dist_sync_fn: Callable[[Any], Any] | None = None,
     ):
         super().__init__(dist_sync_fn=dist_sync_fn)  # type: ignore
 
@@ -123,7 +124,7 @@ class DistanceSampler(Metric):
         num_choices: int,
         num_features: int,
         *,
-        dist_sync_fn: Optional[Callable[[Any], Any]] = None,
+        dist_sync_fn: Callable[[Any], Any] | None = None,
     ):
         super().__init__(dist_sync_fn=dist_sync_fn)  # type: ignore
 
@@ -173,7 +174,7 @@ class BatchSummer(Metric):
 
     full_state_update = True
 
-    def __init__(self, num_values: int, *, dist_sync_fn: Optional[Callable[[Any], Any]] = None):
+    def __init__(self, num_values: int, *, dist_sync_fn: Callable[[Any], Any] | None = None):
         super().__init__(dist_sync_fn=dist_sync_fn)  # type: ignore
 
         self.sums: torch.Tensor
@@ -198,7 +199,7 @@ class BatchAverager(Metric):
         num_values: int,
         for_variance: bool,
         *,
-        dist_sync_fn: Optional[Callable[[Any], Any]] = None,
+        dist_sync_fn: Callable[[Any], Any] | None = None,
     ):
         super().__init__(dist_sync_fn=dist_sync_fn)  # type: ignore
 

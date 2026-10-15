@@ -1,9 +1,7 @@
-from typing import Tuple
-
 import torch
 
 
-def collate_tuple(batch: Tuple[torch.Tensor, ...]) -> Tuple[torch.Tensor, ...]:
+def collate_tuple(batch: tuple[torch.Tensor, ...]) -> tuple[torch.Tensor, ...]:
     """
     Collate a tuple of batch items by returning the input tuple.
 
@@ -13,7 +11,7 @@ def collate_tuple(batch: Tuple[torch.Tensor, ...]) -> Tuple[torch.Tensor, ...]:
     return batch
 
 
-def collate_tensor(batch: Tuple[torch.Tensor, ...]) -> torch.Tensor:
+def collate_tensor(batch: tuple[torch.Tensor, ...]) -> torch.Tensor:
     """
     Collates a tuple of batch items into the first tensor.
 

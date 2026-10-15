@@ -14,7 +14,7 @@ def jit_log_normal(
         # Precision shape is `[num_components, dim, dim]`.
         log_prob = x.new_empty((x.size(0), means.size(0)))
         # We loop here to not blow up the size of intermediate matrices
-        for k, (mu, prec_chol) in enumerate(zip(means, precisions_cholesky)):
+        for k, (mu, prec_chol) in enumerate(zip(means, precisions_cholesky, strict=False)):
             inner = x.matmul(prec_chol) - mu.matmul(prec_chol)
             log_prob[:, k] = inner.square().sum(1)
     elif covariance_type == "tied":

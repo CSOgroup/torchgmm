@@ -1,4 +1,5 @@
-from typing import Sequence, TypeVar, Union
+from collections.abc import Sequence
+from typing import TypeVar, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -7,7 +8,9 @@ from torch.utils.data import DataLoader, TensorDataset
 
 T = TypeVar("T")
 
-TensorLike = Union[
+# `Union` is used (instead of `|`) for the type aliases below since their docstrings cannot be set
+# on `types.UnionType`.
+TensorLike = Union[  # noqa: UP007
     npt.NDArray[np.float32],
     torch.Tensor,
 ]
@@ -17,7 +20,7 @@ annotation if your methods in an estimator derived from :class:`torchgmm.base.Ba
 tensors.
 """
 
-DataLoaderLike = Union[
+DataLoaderLike = Union[  # noqa: UP007
     DataLoader[T],
     Sequence[DataLoader[T]],
 ]
