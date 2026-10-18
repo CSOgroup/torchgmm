@@ -24,11 +24,11 @@ classifiers = [
 ]
 dependencies = [
   "anndata",
+  "numpy>=1.20.3",
+  "pytorch-lightning>=2",
   # for debug logging (referenced from the issue template)
   "session-info2",
-  "numpy>=1.20.3",
-  "pytorch-lightning>=2.0.0",
-  "torch>1.11.0",
+  "torch>1.11",
   "torchmetrics>=0.6",
 ]
 # https://docs.pypi.org/project_metadata/#project-urls
@@ -42,12 +42,12 @@ dev = [
   "twine>=4.0.2",
 ]
 test = [
-  "flaky",
-  "pytest-benchmark",
-  "scikit-learn",
   "coverage>=7.10",
+  "flaky",
   "pytest",
-  "pytest-cov",     # For VS Code’s coverage functionality
+  "pytest-benchmark",
+  "pytest-cov",       # For VS Code’s coverage functionality
+  "scikit-learn",
 ]
 doc = [
   "ipykernel",
@@ -104,17 +104,17 @@ lint.select = [
   "W",      # Warning detected by Pycodestyle
 ]
 lint.ignore = [
-  "D102",
-  "D205",
-  "D200",
-  "B024",
   "B008", # Errors from function calls in argument defaults. These are fine when the result is immutable.
+  "B024",
   "D100", # Missing docstring in public module
+  "D102",
   "D104", # Missing docstring in public package
   "D105", # __magic__ methods are often self-explanatory, allow missing docstrings
   "D107", # Missing docstring in __init__
+  "D200",
   # Disable one in each pair of mutually incompatible rules
   "D203", # We don’t want a blank line before a class docstring
+  "D205",
   "D213", # <> We want docstrings to start immediately after the opening triple quote
   "D400", # first line should end with a period [Bug: doesn’t work with single-line docstrings]
   "D401", # First line should be in imperative mood; try rephrasing
