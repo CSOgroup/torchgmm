@@ -135,11 +135,11 @@ strict = true
 testpaths = [ "tests" ]
 
 [tool.coverage]
+run.source = [ "torchgmm" ]
 run.omit = [
   "**/test_*.py",
 ]
 run.patch = [ "subprocess" ]
-run.source = [ "torchgmm" ]
 
 [tool.cruft]
 skip = [
