@@ -4,7 +4,7 @@ requires = [ "hatchling" ]
 
 [project]
 name = "torchgmm"
-version = "0.1.4"
+version = "0.1.5"
 description = "Run Gaussian Mixture Models on single or multiple CPUs/GPUs"
 readme = "README.md"
 license = { file = "LICENSE" }
