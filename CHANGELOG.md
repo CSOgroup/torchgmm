@@ -13,3 +13,8 @@ and this project adheres to [Semantic Versioning][].
 ### Added
 
 - Basic tool, preprocessing and plotting functions
+- Support for Python 3.14 ([#24](https://github.com/CSOgroup/torchgmm/issues/24))
+
+### Fixed
+
+- Import error on Python 3.14 caused by setting `__doc__` on `typing.Union` type aliases
