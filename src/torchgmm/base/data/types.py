@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import TypeVar, Union
+from typing import TypeVar
 
 import numpy as np
 import numpy.typing as npt
@@ -8,23 +8,17 @@ from torch.utils.data import DataLoader, TensorDataset
 
 T = TypeVar("T")
 
-# `Union` is used (instead of `|`) for the type aliases below since their docstrings cannot be set
-# on `types.UnionType`.
-TensorLike = Union[  # noqa: UP007
-    npt.NDArray[np.float32],
-    torch.Tensor,
-]
-TensorLike.__doc__ = """
+# The aliases below are documented with attribute docstrings: union objects do not allow setting
+# `__doc__` (on Python 3.14+ this also applies to `typing.Union`).
+TensorLike = npt.NDArray[np.float32] | torch.Tensor
+"""
 Type annotation for functions accepting any kind of tensor data as input. Consider using this
 annotation if your methods in an estimator derived from :class:`torchgmm.base.BaseEstimator` work on
 tensors.
 """
 
-DataLoaderLike = Union[  # noqa: UP007
-    DataLoader[T],
-    Sequence[DataLoader[T]],
-]
-DataLoaderLike.__doc__ = """
+DataLoaderLike = DataLoader[T] | Sequence[DataLoader[T]]
+"""
 Generic type annotation for functions accepting any data loader as input. Consider using this
 annotation for the implementation of methods in an estimator derived from
 :class:`torchgmm.base.BaseEstimator`.
